@@ -15,6 +15,8 @@ arguments (Output)
     resMapY
 end
 
+inputdatascale = 40075000/86400; %m/points
+
 switch dat_choice
     case 1
         rng(2021)
@@ -31,32 +33,32 @@ switch dat_choice
         A(A < 0) = 0; % Fill-in areas below 0
         xvec = x(1,:); 
         yvec = y(:,1);
-        resMapX = mean(diff(xvec));
-        resMapY = mean(diff(yvec));
     case 2
         load("GEBCO_arcmin.mat");
         xvec = long_vec;
         yvec = lat_vec;
         A = arcmin_dat;
-        xLimits = [0,length(xvec)];
-        yLimits = [0,length(yvec)];
+        xLimits = inputdatascale.*[0,length(xvec)];
+        yLimits = inputdatascale.*[0,length(yvec)];
     case 3
         load("GEBCO_50.mat");
         xvec = long_vec;
         yvec = lat_vec;
         A = Grid50_dat;
-        xLimits = [0,length(xvec)];
-        yLimits = [0,length(yvec)];
+        xLimits = inputdatascale.*[0,length(xvec)];
+        yLimits = inputdatascale.*[0,length(yvec)];
     case 4
         load("GEBCO_200.mat");
-        xvec = long_vec;
-        yvec = lat_vec;
+        xvec = inputdatascale.*(long_vec - long_vec(1)*ones(size(long_vec)));
+        yvec = inputdatascale.*(lat_vec - lat_vec(1)*ones(size(lat_vec)));
         A = Grid200_dat;
         A = fliplr(fliplr(A).');
         A = rot90(A,2);
-        xLimits = [0,length(xvec)];
-        yLimits = [0,length(yvec)];
+        xLimits = inputdatascale.*[0,length(xvec)];
+        yLimits = inputdatascale.*[0,length(yvec)];
 end
+resMapX = mean(diff(xvec));
+resMapY = mean(diff(yvec));
 end
 
 
